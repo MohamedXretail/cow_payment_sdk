@@ -91,7 +91,7 @@ class Cowpay extends StatefulWidget {
 
 class _CowpayState extends State<Cowpay> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  int paymentOption=0;
+  int paymentOption = 0;
 
   @override
   void initState() {
@@ -105,7 +105,7 @@ class _CowpayState extends State<Cowpay> with SingleTickerProviderStateMixin {
       merchantHash: widget.merchantHash,
     );
     _tabController = new TabController(vsync: this, length: 1);
-    paymentOption=widget.paymentOption;
+    paymentOption = widget.paymentOption;
   }
 
   @override
@@ -353,7 +353,7 @@ class _ChargeButton extends StatelessWidget {
     this.buttonTextColor,
     required this.onFawrySuccess,
     required this.onClosedByUser,
-    this.paymentOption=0,
+    this.paymentOption = 0,
     required this.onCreditCardSuccess,
     required this.onError,
     /*required this.amount*/
@@ -364,9 +364,8 @@ class _ChargeButton extends StatelessWidget {
     return BlocBuilder<CowpayBloc, CowpayState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        int currentIndex = context.read<CowpayBloc>().state.tabCurrentIndex;
         if (state.status.isSubmissionSuccess) {
-          if (paymentOption!=10) {
+          if (paymentOption != 10) {
             context.read<CowpayBloc>().add(ClearStatus());
             SchedulerBinding.instance!.addPostFrameCallback((_) async {
               PayLoadModel? payLoadModel = await Navigator.push(
@@ -387,7 +386,7 @@ class _ChargeButton extends StatelessWidget {
 
                 onCreditCardSuccess(cardSuccessModel);
               }
-              Navigator.pop(context);
+              //Navigator.pop(context);
             });
           } else {
             context.read<CowpayBloc>().add(ClearStatus());
@@ -434,21 +433,19 @@ class _ChargeButton extends StatelessWidget {
                 backgroundColor: buttonColor ?? Theme.of(context).primaryColor,
                 mainContext: context,
                 buttonTextStyle: buttonTextStyle,
-                onClickFunction: paymentOption != 10?onClickSubmitCreditCard:onClickSubmitFawry,
+                onClickFunction: paymentOption != 10
+                    ? onClickSubmitCreditCard
+                    : onClickSubmitFawry,
               );
       },
     );
   }
 
-  void onClickSubmitFawry(
-    BuildContext context,
-  ) {
-      context.read<CowpayBloc>().add(ChargeFawry());
-
+  void onClickSubmitFawry(BuildContext context) {
+    context.read<CowpayBloc>().add(ChargeFawry());
   }
-  void onClickSubmitCreditCard(
-      BuildContext context,
-      ) {
+
+  void onClickSubmitCreditCard(BuildContext context) {
     context.read<CowpayBloc>().add(ChargeCreditCardValidation());
   }
 }
